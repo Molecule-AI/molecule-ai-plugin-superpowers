@@ -7,6 +7,7 @@ tags: [debugging, testing, planning, verification]
 runtimes:
   - claude_code
   - deepagents
+  - hermes
 
 skills:
   - executing-plans
