@@ -1,6 +1,7 @@
 ---
 name: verification-before-completion
 description: Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always
+origin: superpowers
 ---
 
 # Verification Before Completion
@@ -114,7 +115,7 @@ From 24 failure memories:
 - Time wasted on false completion → redirect → rework
 - Violates: "Honesty is a core value. If you lie, you'll be replaced."
 
-## When To Apply
+## When to Use
 
 **ALWAYS before:**
 - ANY variation of success/completion claims
