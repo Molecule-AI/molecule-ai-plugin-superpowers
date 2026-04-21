@@ -1,38 +1,54 @@
-# Known Issues — molecule-ai-plugin-superpowers
-
-Issues identified in this plugin repo (GH_TOKEN may be unavailable in automated agent contexts). Each entry has: location, symptom, impact, suggested fix.
-
-Format per entry:
-```
-## KI-N — Short title
-
-**File:** `<path>:<line>`
-**Status:** TODO comment / identified / partially fixed
-**Severity:** Critical / High / Medium / Low
-
-### Symptom
-...
-
-### Impact
-...
-
-### Suggested fix
-...
----
-```
+# Known Issues — superpowers
 
 ---
 
-**Policy:** File a GitHub issue before patching silently. Do not merge a workaround without a linked issue.
+## Active Issues
 
-**Before opening an issue, check:**
-- The [open issues](https://github.com/Molecule-AI/molecule-ai-plugin-superpowers/issues)
-- The platform constraints in `docs/development/constraints-and-rules.md`
-- Any relevant cron learnings in `.claude/cron-learnings.md`
+*(None currently open. This section is updated when issues are filed.)*
 
-### Severity Definitions
+---
 
-- **Critical:** Plugin fails to install or crashes the agent runtime
-- **High:** Plugin produces wrong/broken behavior in normal use
-- **Medium:** UX degraded, workaround exists
-- **Low:** Cosmetic, negligible user impact
+## Recently Resolved
+
+*(No recently resolved issues.)*
+
+---
+
+## How to Update This File
+
+When a new issue is identified:
+1. Add it under **Active Issues** using the template below
+2. Include: symptom, cause (if known), workaround
+3. When fixed, move to **Recently Resolved** and note the fix version
+
+### Issue Template
+
+```markdown
+## [TICKET-NUMBER] <Short Title>
+
+**Severity:** P0 / P1 / P2 / P3
+**Status:** Workaround / Fix in progress / Fix available
+**Affected versions:** All / vX.Y.Z+
+
+**Symptoms:**
+**Cause:**
+**Workaround:**
+**Fix (if available):**
+```
+
+---
+
+## Severity Definitions
+
+| Level | Description |
+|---|---|
+| P0 | Skill fails to load; no workaround |
+| P1 | Core skill broken; no output or wrong output |
+| P2 | Non-core issue; workaround available |
+| P3 | Cosmetic or documentation issue |
+
+---
+
+## Reporting
+
+Use the Molecule-AI/internal issue tracker. Tag with `plugin-superpowers`.

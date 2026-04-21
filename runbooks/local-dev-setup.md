@@ -1,60 +1,80 @@
 # Local Development Setup
 
+This runbook covers setting up a local development environment for `superpowers`.
+
+---
+
 ## Prerequisites
 
 - Python 3.11+
-- `pip` or `pipx`
+- `gh` CLI authenticated
+- Write access to `Molecule-AI/molecule-ai-plugin-superpowers`
 
-## Setup
+---
+
+## Clone & Bootstrap
 
 ```bash
-# 1. Clone the repo
 git clone https://github.com/Molecule-AI/molecule-ai-plugin-superpowers.git
 cd molecule-ai-plugin-superpowers
-
-# 2. Install dependencies
-pip install -r .molecule-ci/scripts/requirements.txt
-
-# 3. Run validation
-python3 .molecule-ci/scripts/validate-plugin.py
-
-# 4. Verify SKILL.md is present and valid
-[ -f SKILL.md ] && head -1 SKILL.md | grep -q "^#" && echo "SKILL.md OK" || echo "SKILL.md invalid"
 ```
 
-## Validating the Plugin
+---
+
+## Validating Plugin Structure
 
 ```bash
-# Full validation
-python3 .molecule-ci/scripts/validate-plugin.py
-```
+# YAML structure
+python3 -c "import yaml; yaml.safe_load(open('plugin.yaml'))"
+echo "plugin.yaml OK"
 
-Expected output:
-```
-✓ plugin.yaml valid: superpowers v1.0.0
-  Content: <files found>
-  Runtimes: claude_code, deepagents, hermes
-```
-
-## Pre-commit Checks
-
-```bash
-# Run all checks before committing
-python3 .molecule-ci/scripts/validate-plugin.py && \
+# Check all skill paths exist
 python3 -c "
-import re, sys
+import yaml, os
 with open('plugin.yaml') as f:
-    content = f.read()
-patterns = [r'sk.ant', r'ghp.', r'AKIA[A-Z0-9]']
-if any(re.search(p, content) for p in patterns):
-    print('FAIL: possible credentials found')
-    sys.exit(1)
-print('No credentials: OK')
-" && echo "All checks passed"
+    data = yaml.safe_load(f)
+for skill in data.get('skills', []):
+    path = f'skills/{skill}/SKILL.md'
+    exists = os.path.exists(path)
+    print(f'[{\"OK\" if exists else \"MISSING\"}] {path}')
+"
 ```
 
-## Adding a New Runtime
+---
 
-1. Edit `plugin.yaml` and add the runtime name to the `runtimes:` list
-2. Run `python3 .molecule-ci/scripts/validate-plugin.py` to verify
-3. Commit with `chore: add <runtime> to supported runtimes`
+## Testing Skills Locally
+
+The harness wrapper (`builtin_tools/`) is not in this repo — it is provided
+by the Molecule AI platform at runtime. To test:
+
+1. Install the plugin in a test workspace via the platform UI or CLI
+2. Trigger each skill and verify output against expected behaviour
+3. For `verification-before-completion`: verify it fires after a deliberate bug
+   is left in the code
+
+---
+
+## Troubleshooting
+
+### plugin.yaml fails to load
+
+```bash
+python3 -c "import yaml; yaml.safe_load(open('plugin.yaml'))"
+# If this throws, your YAML is malformed
+```
+
+### Skill not appearing in workspace
+
+- Verify the skill name in `plugin.yaml` matches the directory name in `skills/`
+- Check the workspace runtime is in `plugin.yaml.runtimes`
+- Restart the workspace to pick up plugin changes
+
+---
+
+## Related
+
+- `skills/executing-plans/SKILL.md` — plan execution skill
+- `skills/systematic-debugging/SKILL.md` — debugging skill
+- `skills/test-driven-development/SKILL.md` — TDD skill
+- `skills/verification-before-completion/SKILL.md` — verification skill
+- `skills/writing-plans/SKILL.md` — planning skill
