@@ -1,66 +1,69 @@
-# superpowers — Molecule AI Plugin
+# superpowers — Agent Capability Extensions
 
-Plugin providing systematic debugging, test-driven development, planning, and verification skills for agent workspaces.
+`superpowers` is a **capability-extension plugin** that provides five
+high-level skills covering the full development lifecycle: systematic debugging,
+test-driven development, planning, plan execution, and pre-completion verification.
 
-## Overview
+**Version:** 1.0.0
+**Runtime:** `claude_code`, `deepagents`, `hermes`
 
-This plugin delivers a suite of agent superpowers: systematic debugging, TDD, planning, and verification. It targets `claude_code`, `deepagents`, and `hermes` runtimes.
+---
 
-## Build and Test
+## Repository Layout
+
+```
+superpowers/
+├── plugin.yaml          — Plugin manifest
+├── skills/
+│   ├── executing-plans/
+│   ├── systematic-debugging/
+│   ├── test-driven-development/
+│   ├── verification-before-completion/
+│   └── writing-plans/
+└── adapters/           — Harness adaptors (thin wrappers)
+```
+
+---
+
+## Skills
+
+| Skill | Purpose |
+|---|---|
+| `executing-plans` | Execute a pre-written plan step by step, adapting to obstacles |
+| `systematic-debugging` | Hypothesis → isolate → verify → fix, with session logging |
+| `test-driven-development` | Red → Green → Refactor cycle, coverage-gated |
+| `verification-before-completion` | Self-check before reporting done: tests, lint, build |
+| `writing-plans` | Break a complex task into ordered, testable steps |
+
+---
+
+## Development
+
+### Prerequisites
+
+- Node.js >= 18 (for markdownlint, if editing `.md` files)
+- Python 3.11+ (for YAML validation)
+- `gh` CLI authenticated
+- Write access to `Molecule-AI/molecule-ai-plugin-superpowers`
+
+### Setup
 
 ```bash
-# Validate plugin structure
-python3 .molecule-ci/scripts/validate-plugin.py
+git clone https://github.com/Molecule-AI/molecule-ai-plugin-superpowers.git
+cd molecule-ai-plugin-superpowers
 
-# Install dependencies
-pip install -r .molecule-ci/scripts/requirements.txt
-
-# Run validation
-python3 .molecule-ci/scripts/validate-plugin.py .
+# Validate plugin.yaml
+python3 -c "import yaml; yaml.safe_load(open('plugin.yaml'))"
+echo "plugin.yaml OK"
 ```
 
-## Project Structure
-
-```
-.                       # Plugin root (plugin.yaml defines the package)
-SKILL.md                # agentskills.io spec for this plugin
-.claude/                 # Agent settings (permissions, hooks)
-.molecule-ci/            # CI validation scripts
-  scripts/
-    validate-plugin.py  # plugin.yaml + content validator
-    requirements.txt    # Python deps (pyyaml)
-runbooks/                # Operational runbooks
-  local-dev-setup.md    # Local development setup guide
-```
-
-## Plugin Manifest
-
-```yaml
-name: superpowers
-version: 1.0.0
-description: Agent superpowers — systematic debugging, test-driven development, planning, and verification
-author: Molecule AI
-runtimes:
-  - claude_code
-  - deepagents
-  - hermes
-skills:
-  - executing-plans
-  - systematic-debugging
-  - test-driven-development
-  - verification-before-completion
-  - writing-plans
-```
-
-## Pre-commit Checklist
-
-Run before every commit:
+### Pre-Commit Checklist
 
 ```bash
-# 1. Validate plugin.yaml structure
-python3 .molecule-ci/scripts/validate-plugin.py
+# YAML structure
+python3 -c "import yaml; yaml.safe_load(open('plugin.yaml'))"
 
-# 2. Check for credentials in all files
+# Credential scan
 python3 -c "
 import re, sys
 with open('plugin.yaml') as f:
@@ -71,23 +74,20 @@ if any(re.search(p, content) for p in patterns):
     sys.exit(1)
 print('No credentials: OK')
 "
-
-# 3. Verify SKILL.md exists and is non-empty
-[ -s SKILL.md ] || { echo "SKILL.md is empty or missing"; exit 1; }
-
-# 4. Verify plugin.yaml is valid YAML
-python3 -c "import yaml; yaml.safe_load(open('plugin.yaml'))" || exit 1
-
-echo "All checks passed"
 ```
 
-## Adding a New Skill
-
-1. Add the skill file under `skills/` (agentskills.io format)
-2. Update `plugin.yaml` `skills:` array if needed
-3. Add to `SKILL.md` index if it has a dedicated section
-4. Run `python3 .molecule-ci/scripts/validate-plugin.py` to verify
+---
 
 ## Release Process
 
-This plugin is released via the Molecule AI platform plugin registry. Version bumps are made in `plugin.yaml` and the change is tagged in this repo. The platform CI/CD pipeline publishes to the registry on merge to `main`.
+1. Review changes: `git log origin/main..HEAD --oneline`
+2. Bump `version` in `plugin.yaml` (semver)
+3. Commit: `chore: bump version to X.Y.Z`
+4. Tag and push: `git tag vX.Y.Z && git push origin main --tags`
+5. Create GitHub Release with changelog
+
+---
+
+## Known Issues
+
+See `known-issues.md` at the repo root.
