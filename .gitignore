@@ -19,3 +19,13 @@
 # Workspace auth tokens
 .auth-token
 .auth_token
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyc
+*$py.class
+.Python
+*.so
+*.egg-info/
+*.egg
